@@ -3,6 +3,7 @@ import os
 import time
 from dotenv import load_dotenv
 from discord.ext import commands
+from discord.ext.commands import has_permissions, CheckFailure, BadArgument, MissingPermissions
 import random
 intents = discord.Intents.default()
 intents.members = True
@@ -169,5 +170,14 @@ async def on_member_join(member):
 
 {member.mention} to {member.guild}""")
 
+@bot.command()
+@has_permissions(administrator = True)
+async def kick(ctx, member: discord.Member, *, reason=None):
+    await member.kick(reason=reason)
+    await ctx.send(f'User {member} has kicked.')
+@kick.error
+async def kick_error(self, ctx, error):
+    if isinstance(error, MissingPermissions):
+        await ctx.send(":redTick: You don't have permission to kick members.")
 
 bot.run(DISCORD_TOKEN)
