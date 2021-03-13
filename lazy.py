@@ -1,13 +1,34 @@
 import discord
 import os
 import time
+import asyncio
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions, CheckFailure, BadArgument, MissingPermissions
 import random
 intents = discord.Intents.default()
 intents.members = True
 load_dotenv()
+
+#stuff for tempmute timing
+time_regex = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
+time_dict = {"h":3600, "s":1, "m":60, "d":86400}
+
+class TimeConverter(commands.Converter):
+    async def convert(self, ctx, argument):
+        matches = time_regex.findall(argument.lower())
+        if not matches:
+             raise commands.BadArgument("no matches were found.")
+        time = 0
+        for v, k in matches:
+            try:
+                time += time_dict[k]*float(v)
+            except KeyError:
+                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
+            except ValueError:
+                raise commands.BadArgument("{} is not a number!".format(v))
+        return time 
+#end of time stuff
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 bot = discord.Client()
@@ -16,7 +37,7 @@ bot.remove_command("help")
 
 @bot.event
 async def on_ready():
-	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="$hp"))
+	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="$help"))
 
 @bot.command(name="std")
 async def shutdown(ctx):
@@ -50,11 +71,11 @@ Use to check if bot is active.
 
 2. Bold <text>
 Prints text in bold.
---> Alias Bd
+--> Alias: Bd
 
 3. Italic <text>
 Prints text in italics.
---> Alias It
+--> Alias: It
 
 4. Help
 Shows this menu.
@@ -64,6 +85,7 @@ Says hello.
 
 6. Hru
 I'm lazy.
+--> Alias: howareyou
 
 7. F
 FFFFFFF.
@@ -77,8 +99,19 @@ Flips a coin.
 11. Welcome [user]
 Welcomes.
 
+12. Kick
+kicks.
+
+13. Ban
+Bans.
+
+14. Purge <amount>
+Clears a defined number of Chats.
+--> Aliases: Clean, Clear.
+
+
 BOT PREFIX ->  $```""", color = 0x00FFFF)
-	await ctx.channel.send(embed = embed)
+	await ctx.channel.send(embed = embed, delete_after=20.0)
 
 @bot.command(aliases = ['Hello', 'hello'])
 async def hello_ji(ctx, user: discord.Member=None):
@@ -170,14 +203,97 @@ async def on_member_join(member):
 
 {member.mention} to {member.guild}""")
 
-@bot.command()
+@bot.command(aliases = ['Kick'])
 @has_permissions(administrator = True)
 async def kick(ctx, member: discord.Member, *, reason=None):
-    await member.kick(reason=reason)
-    await ctx.send(f'User {member} has kicked.')
+	await member.kick(reason=reason)
+	embed = discord.Embed(title = f":white_check_mark: {member} has been Kicked!", description = f"Reason: {reason}", color = 0x00FFFF)
+	await ctx.send(embed = embed)
+  
 @kick.error
-async def kick_error(self, ctx, error):
-    if isinstance(error, MissingPermissions):
-        await ctx.send(":redTick: You don't have permission to kick members.")
+async def kick_error(ctx, error):
+    if isinstance(error, CheckFailure):
+        embed = discord.Embed(description = f":x: You don't have enough permission to kick members.", color = 0x00FFFF)
+        await ctx.send(embed = embed)
+    elif isinstance(error, BadArgument):
+    	embed = discord.Embed(description = f":x: Couldn't Identify Target.", color = 0x00FFFF)
+    	await ctx.channel.send(embed=embed)
+    else:
+    	raise error
+
+@bot.command(aliases = ['Ban'])
+@has_permissions(administrator = True)
+async def ban(ctx, member: discord.Member, *, reason=None):
+	await member.ban(reason=reason)
+	embed = discord.Embed(title = f":white_check_mark: {member} has been Banned!", description = f"Reason: {reason}", color = 0x00FFFF)
+	await ctx.send(embed = embed)
+  
+@ban.error
+async def ban_error(ctx, error):
+    if isinstance(error, CheckFailure):
+        embed = discord.Embed(description = f":x: You don't have enough permission to ban members.", color = 0x00FFFF)
+        await ctx.send(embed = embed)
+    elif isinstance(error, BadArgument):
+    	embed = discord.Embed(description = f":x: Couldn't Identify Target.", color = 0x00FFFF)
+    	await ctx.channel.send(embed=embed)
+    else:
+    	raise error
+
+
+@bot.command(pass_context=True, aliases = ['purge', 'Purge', 'Clean', 'Clear', 'clear'])
+@has_permissions(administrator=True)
+async def clean(ctx, limit: int):
+        limit = int(limit + 1)
+        await ctx.channel.purge(limit=limit)
+        limit = int(limit - 1)
+        await ctx.send('Cleared {} Chats by {}'.format(limit, ctx.author.mention), delete_after=2.0)
+        await ctx.message.delete()
+
+#mute
+@bot.command(pass_context = True)
+async def mute(ctx, member: discord.Member):
+     if ctx.message.author.guild_permissions.administrator:
+        role = discord.utils.get(member.guild.roles, name='Muted')
+        await member.add_roles(role)
+        embed=discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(member, ctx.message.author), color=0x00FFFF)
+        await ctx.channel.send(embed=embed)
+     else:
+        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0x00FFFF)
+        await ctx.channel.send(embed=embed)
+# /mute
+
+#unmute
+@bot.command(pass_context = True)
+async def unmute(ctx, member: discord.Member):
+     if ctx.message.author.guild_permissions.administrator:
+        role = discord.utils.get(member.guild.roles, name='Muted')
+        await member.remove_roles(role)
+        embed=discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(member, ctx.message.author), color=0x00FFFF)
+        await ctx.send(embed=embed)
+     else:
+        embed=discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0x00FFFF)
+        await ctx.send(embed=embed)
+# /unmute
+
+#tempmute
+@bot.command()
+async def mute(ctx, member: commands.MemberConverter, *, time: TimeConverter, reason=None): 
+    guild = ctx.guild
+    for role in guild.roles:
+        if role.name == "Muted":
+            await member.add_roles(role)
+
+            embed = discord.Embed(title="muted!", description=f"{member.mention} has been tempmuted ", colour=discord.Colour.light_gray())
+            embed.add_field(name="reason:", value=reason, inline=False)
+            embed.add_field(name="time left for the mute:", value=f"{time}", inline=False)
+            await ctx.send(embed=embed)
+            await asyncio.sleep(time)
+            await member.remove_roles(role)
+            embed = discord.Embed(title="unmute (temp) ", description=f"unmuted -{member.mention} ", colour=discord.Colour.light_gray())
+            await ctx.send(embed=embed)
+
+            return
+
+# / tempmute
 
 bot.run(DISCORD_TOKEN)
