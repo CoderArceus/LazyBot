@@ -10,26 +10,6 @@ intents = discord.Intents.default()
 intents.members = True
 load_dotenv()
 
-#stuff for tempmute timing
-time_regex = re.compile(r"(\d{1,5}(?:[.,]?\d{1,5})?)([smhd])")
-time_dict = {"h":3600, "s":1, "m":60, "d":86400}
-
-class TimeConverter(commands.Converter):
-    async def convert(self, ctx, argument):
-        matches = time_regex.findall(argument.lower())
-        if not matches:
-             raise commands.BadArgument("no matches were found.")
-        time = 0
-        for v, k in matches:
-            try:
-                time += time_dict[k]*float(v)
-            except KeyError:
-                raise commands.BadArgument("{} is an invalid time-key! h/m/s/d are valid!".format(k))
-            except ValueError:
-                raise commands.BadArgument("{} is not a number!".format(v))
-        return time 
-#end of time stuff
-
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 bot = discord.Client()
 bot = commands.Bot(command_prefix="$", intents=intents)
@@ -99,16 +79,22 @@ Flips a coin.
 11. Welcome [user]
 Welcomes.
 
-12. Kick
+12. Kick <user>
 kicks.
 
-13. Ban
+13. Ban <user>
 Bans.
 
 14. Purge <amount>
 Clears a defined number of Chats.
 --> Aliases: Clean, Clear.
 
+15. Tempmute <user>
+Temporarily mutes a user.
+--> Alias: Tm
+
+16. Unmute <user>
+Unmutes a specific user.
 
 BOT PREFIX ->  $```""", color = 0x00FFFF)
 	await ctx.channel.send(embed = embed, delete_after=20.0)
@@ -189,7 +175,8 @@ async def welcomer_smol(ctx, user: discord.Member=None):
 
 @bot.event
 async def on_member_join(member):
-	await bot.get_channel(799616295364198403).send(f"""
+	if member.guild.id == 799616295364198400:
+		await bot.get_channel(799616295364198403).send(f"""
 ───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
 ───█▒▒░░░░░░░░░▒▒█───
 ────█░░█░░░░░█░░█────
@@ -202,6 +189,22 @@ async def on_member_join(member):
 █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
 
 {member.mention} to {member.guild}""")
+	
+	elif member.guild.id == 807527480705548288:
+		await bot.get_channel(815473543785480205).send(f"""
+───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
+───█▒▒░░░░░░░░░▒▒█───
+────█░░█░░░░░█░░█────
+─▄▄──█░░░▀█▀░░░█──▄▄─
+█░░█─▀▄░░░░░░░▄▀─█░░█
+█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
+█░░║║║╠─║─║─║║║║║╠─░░█
+█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+
+{member.mention} to {member.guild}""")
+
 
 @bot.command(aliases = ['Kick'])
 @has_permissions(administrator = True)
@@ -276,20 +279,37 @@ async def unmute(ctx, member: discord.Member):
 # /unmute
 
 #tempmute
-@bot.command()
-async def mute(ctx, member: commands.MemberConverter, *, time: TimeConverter, reason=None): 
+@bot.command(aliases = ['tm', 'Tm', 'TM', 'Tempmute'])
+async def tempmute(ctx, member: discord.Member, time0, *, reason=None):
     guild = ctx.guild
+    time = time0[:-1]
+    time_type = time0[-1:]
+    time = int(time)
+
     for role in guild.roles:
         if role.name == "Muted":
             await member.add_roles(role)
 
-            embed = discord.Embed(title="muted!", description=f"{member.mention} has been tempmuted ", colour=discord.Colour.light_gray())
-            embed.add_field(name="reason:", value=reason, inline=False)
-            embed.add_field(name="time left for the mute:", value=f"{time}", inline=False)
+            embed = discord.Embed(title="Muted!", description=f"{member.mention} has been tempmuted ", colour=0x00FFFF)
+            embed.add_field(name="Reason:", value=reason, inline=False)
+            embed.add_field(name="Time left for the mute:", value=f"{time0}", inline=False)
             await ctx.send(embed=embed)
-            await asyncio.sleep(time)
+
+            if time_type == "s":
+                await asyncio.sleep(time)
+
+            if time_type== "m":
+                await asyncio.sleep(time*60)
+
+            if time_type == "h":
+                await asyncio.sleep(time*60*60)
+
+            if time_type == "d":
+                await asyncio.sleep(time*60*60*24)
+
             await member.remove_roles(role)
-            embed = discord.Embed(title="unmute (temp) ", description=f"unmuted -{member.mention} ", colour=discord.Colour.light_gray())
+
+            embed = discord.Embed(title="Unmuted (temp)! ", description=f"Unmuted -{member.mention} ", colour=0x00FFFF)
             await ctx.send(embed=embed)
 
             return
