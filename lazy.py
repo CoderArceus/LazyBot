@@ -1,10 +1,11 @@
 import discord
+from discord import User
 import os
 import time
 import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
-from discord.ext.commands import has_permissions, CheckFailure, BadArgument, MissingPermissions
+from discord.ext.commands import has_permissions, CheckFailure, BadArgument, MissingPermissions, Bot, guild_only
 import random
 intents = discord.Intents.default()
 intents.members = True
@@ -147,64 +148,20 @@ async def flip_da_coin(ctx):
 @bot.command(aliases = ['Welcome', 'welcome'])
 async def welcomer_smol(ctx, user: discord.Member=None):
 	if not user:
-		await ctx.send("""
-───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
-───█▒▒░░░░░░░░░▒▒█───
-────█░░█░░░░░█░░█────
-─▄▄──█░░░▀█▀░░░█──▄▄─
-█░░█─▀▄░░░░░░░▄▀─█░░█
-█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
-█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
-█░░║║║╠─║─║─║║║║║╠─░░█
-█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
-█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
-""")
+		await ctx.send("https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif")
 	else:
-		await ctx.send("""
-───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
-───█▒▒░░░░░░░░░▒▒█───
-────█░░█░░░░░█░░█────
-─▄▄──█░░░▀█▀░░░█──▄▄─
-█░░█─▀▄░░░░░░░▄▀─█░░█
-█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
-█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
-█░░║║║╠─║─║─║║║║║╠─░░█
-█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
-█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
-||{}||""".format(user.mention))
+		await ctx.send("""||{}||
+https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif""".format(user.mention))
 
 @bot.event
 async def on_member_join(member):
 	if member.guild.id == 799616295364198400:
-		await bot.get_channel(799616295364198403).send(f"""
-───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
-───█▒▒░░░░░░░░░▒▒█───
-────█░░█░░░░░█░░█────
-─▄▄──█░░░▀█▀░░░█──▄▄─
-█░░█─▀▄░░░░░░░▄▀─█░░█
-█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
-█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
-█░░║║║╠─║─║─║║║║║╠─░░█
-█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
-█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
-
-{member.mention} to {member.guild}""")
+		await bot.get_channel(799616295364198403).send(f"""{member.mention} to {member.guild}
+https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif""")
 	
 	elif member.guild.id == 807527480705548288:
-		await bot.get_channel(815473543785480205).send(f"""
-───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
-───█▒▒░░░░░░░░░▒▒█───
-────█░░█░░░░░█░░█────
-─▄▄──█░░░▀█▀░░░█──▄▄─
-█░░█─▀▄░░░░░░░▄▀─█░░█
-█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
-█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
-█░░║║║╠─║─║─║║║║║╠─░░█
-█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
-█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
-
-{member.mention} to {member.guild}""")
-
+		await bot.get_channel(815473543785480205).send(f"""{member.mention} to {member.guild}
+https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif""")
 
 @bot.command(aliases = ['Kick'])
 @has_permissions(administrator = True)
@@ -313,7 +270,26 @@ async def tempmute(ctx, member: discord.Member, time0, *, reason=None):
             await ctx.send(embed=embed)
 
             return
-
 # / tempmute
+
+@bot.command(pass_context=True)
+@has_permissions(administrator=True)
+@guild_only()
+async def unban(ctx, id: int):
+    user = await bot.fetch_user(id)
+    await ctx.guild.unban(user)
+    embed = discord.Embed(title="Unbanned!", description=f"{user.name} has been unbanned.", color=0x00FFFF)
+    await ctx.send(embed=embed)
+	
+@unban.error
+async def unban_error(ctx, error):
+    if isinstance(error, CheckFailure):
+        embed = discord.Embed(description = f":x: You don't have enough permission to unban members.", color = 0x00FFFF)
+        await ctx.send(embed = embed)
+    elif isinstance(error, BadArgument):
+    	embed = discord.Embed(description = f":x: Couldn't Identify Target.", color = 0x00FFFF)
+    	await ctx.channel.send(embed=embed)
+    else:
+    	raise error
 
 bot.run(DISCORD_TOKEN)
