@@ -13,12 +13,12 @@ load_dotenv()
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 bot = discord.Client()
-bot = commands.Bot(command_prefix="$", intents=intents)
+bot = commands.Bot(command_prefix=";", intents=intents)
 bot.remove_command("help")
 
 @bot.event
 async def on_ready():
-	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="$help"))
+	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=";help"))
 
 @bot.command(name="std")
 async def shutdown(ctx):
@@ -100,18 +100,15 @@ Unmutes a specific user.
 BOT PREFIX ->  $```""", color = 0x00FFFF)
 	await ctx.channel.send(embed = embed, delete_after=20.0)
 
-@bot.command(aliases = ['Hello', 'hello'])
-async def hello_ji(ctx, user: discord.Member=None):
-	if not user:
-		await ctx.send(f"Hello Ji, {ctx.author.name}")
+@bot.command(aliases = ['Hello'])
+async def hello(ctx, mention = None):
+	if mention == None:
+		await ctx.send(f"""Hello Ji, {ctx.author.name} 
+https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif""")
 		
 	else:
-		await ctx.send("""
-
-░█─░█ █▀▀ █── █── █▀▀█ 
-░█▀▀█ █▀▀ █── █── █──█ 
-░█─░█ ▀▀▀ ▀▀▀ ▀▀▀ ▀▀▀▀
-||{}||""".format(user.mention))
+		await ctx.send("""https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif
+||{}||""".format(mention))
 	
 @bot.command(aliases = ['Hru', 'hru'])
 async def howareyou(ctx):
@@ -156,11 +153,11 @@ https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/wel
 @bot.event
 async def on_member_join(member):
 	if member.guild.id == 799616295364198400:
-		await bot.get_channel(799616295364198403).send(f"""{member.mention} to {member.guild}
+		await bot.get_channel(799616295364198403).send(f"""Welcome {member.mention} to {member.guild}
 https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif""")
 	
 	elif member.guild.id == 807527480705548288:
-		await bot.get_channel(815473543785480205).send(f"""{member.mention} to {member.guild}
+		await bot.get_channel(815473543785480205).send(f"""Welcome {member.mention} to {member.guild}
 https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif""")
 
 @bot.command(aliases = ['Kick'])
@@ -291,5 +288,17 @@ async def unban_error(ctx, error):
     	await ctx.channel.send(embed=embed)
     else:
     	raise error
+
+#avatar
+@bot.command(aliases = ['Avatar', 'Av', 'av'])
+async def avatar(ctx, user: discord.Member = None):
+	if user == None:
+		embed = discord.Embed(title = f"{ctx.message.author.name}", description = f"{author.avatar_url}", color = 0x00FFFF)
+		await ctx.send(embed=embed)
+	else:
+		embed = discord.Embed(title = user.name, color = 0x00FFFF)
+		embed.set_image(url=user.avatar_url)
+		await ctx.send(embed=embed)
+# /avatar
 
 bot.run(DISCORD_TOKEN)
