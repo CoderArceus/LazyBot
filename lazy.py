@@ -16,10 +16,14 @@ bot = discord.Client()
 bot = commands.Bot(command_prefix=";", intents=intents)
 bot.remove_command("help")
 
+
+#onready
 @bot.event
 async def on_ready():
 	await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=";help"))
+# /onready
 
+#shutdown
 @bot.command(name="std")
 async def shutdown(ctx):
     id = str(ctx.author.id)
@@ -28,20 +32,28 @@ async def shutdown(ctx):
         await ctx.bot.logout()
     else:
         await ctx.send("You dont have sufficient permissions to perform this action!")
+# /shutdown
     
+#ping
 @bot.command(aliases = ['Ping', 'ping'])
 async def pinger(ctx):
      embed = discord.Embed(description = f':hourglass: Pong!  {round(bot.latency * 1000)}ms', color = 0x00FFFF)
      await ctx.send(embed = embed)
+# /ping
 
+#bold
 @bot.command(aliases = ['bold', 'bd', 'Bold'])
 async def bold_da_text(ctx, arg):
 	await ctx.channel.send("**" + arg +"**")
+# /bold
 	
+#italic
 @bot.command(aliases = ['italic', 'it', 'Italic'])
 async def italic_da_text(ctx, arg):
 	await ctx.channel.send("*" + arg +"*")
+# /italic
 	
+#help
 @bot.command(name="help")
 async def commands(ctx):
 	embed = discord.Embed(title = "LazyBot Commands" , description = """```
@@ -97,9 +109,15 @@ Temporarily mutes a user.
 16. Unmute <user>
 Unmutes a specific user.
 
-BOT PREFIX ->  $```""", color = 0x00FFFF)
-	await ctx.channel.send(embed = embed, delete_after=20.0)
+17. Avatar [user]
+Displays user's avatar.
+--> Alias: Av
 
+BOT PREFIX ->  $```""", color = 0x00FFFF)
+	await ctx.channel.send(embed = embed)
+# /help
+
+#hello
 @bot.command(aliases = ['Hello'])
 async def hello(ctx, mention = None):
 	if mention == None:
@@ -109,11 +127,15 @@ https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tum
 	else:
 		await ctx.send("""https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif
 ||{}||""".format(mention))
+# /hello
 	
+#hru
 @bot.command(aliases = ['Hru', 'hru'])
 async def howareyou(ctx):
 	await ctx.channel.send("I'm tired af but my owner doesn't let me sleep :pensive:")
+# /hru
 
+#F
 @bot.command(aliases = ['F', 'f'])
 async def F_respects(ctx):
 	await ctx.channel.send("""
@@ -125,14 +147,18 @@ FFF
 FFF
 FFF
 FFF""")
+# /F
 
+#random
 @bot.command(aliases = ['Random', 'random'])
 async def randomizer(ctx, num1, num2):
 	num1final = int(num1)
 	num2final = int(num2)
 	embed = discord.Embed(title = f"Random Number Between {num1final} and {num2final}", description = random.randint(num1final, num2final), color = 0x00FFFF)
 	await ctx.send(embed = embed)
-	
+# /random
+
+#coinflip
 @bot.command(aliases = ['Coinflip', 'coinflip'])
 async def flip_da_coin(ctx):
 	variable = [
@@ -141,7 +167,9 @@ async def flip_da_coin(ctx):
 	
 	embed = discord.Embed(title = "Coinflipper!", description = f"The Coin has flipped on.... {random.choice(variable)}", color = 0x00FFFF)
 	await ctx.send(embed = embed)
-	
+# /coinflip
+
+#welcomer
 @bot.command(aliases = ['Welcome', 'welcome'])
 async def welcomer_smol(ctx, user: discord.Member=None):
 	if not user:
@@ -159,7 +187,9 @@ https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/wel
 	elif member.guild.id == 807527480705548288:
 		await bot.get_channel(815473543785480205).send(f"""Welcome {member.mention} to {member.guild}
 https://cdn.discordapp.com/attachments/784278783057854485/820594071567335434/welccome1.gif""")
+# /welcomer
 
+#kick
 @bot.command(aliases = ['Kick'])
 @has_permissions(administrator = True)
 async def kick(ctx, member: discord.Member, *, reason=None):
@@ -177,7 +207,9 @@ async def kick_error(ctx, error):
     	await ctx.channel.send(embed=embed)
     else:
     	raise error
+# /kick
 
+#ban
 @bot.command(aliases = ['Ban'])
 @has_permissions(administrator = True)
 async def ban(ctx, member: discord.Member, *, reason=None):
@@ -195,8 +227,9 @@ async def ban_error(ctx, error):
     	await ctx.channel.send(embed=embed)
     else:
     	raise error
+# /ban
 
-
+#purge
 @bot.command(pass_context=True, aliases = ['purge', 'Purge', 'Clean', 'Clear', 'clear'])
 @has_permissions(administrator=True)
 async def clean(ctx, limit: int):
@@ -205,6 +238,7 @@ async def clean(ctx, limit: int):
         limit = int(limit - 1)
         await ctx.send('Cleared {} Chats by {}'.format(limit, ctx.author.mention), delete_after=2.0)
         await ctx.message.delete()
+# /purge
 
 #mute
 @bot.command(pass_context = True)
@@ -269,6 +303,7 @@ async def tempmute(ctx, member: discord.Member, time0, *, reason=None):
             return
 # / tempmute
 
+#unban
 @bot.command(pass_context=True)
 @has_permissions(administrator=True)
 @guild_only()
@@ -288,12 +323,15 @@ async def unban_error(ctx, error):
     	await ctx.channel.send(embed=embed)
     else:
     	raise error
+# /unban
 
 #avatar
-@bot.command(aliases = ['Avatar', 'Av', 'av'])
+@bot.command(pass_context=True, aliases = ['Avatar', 'Av', 'av'])
 async def avatar(ctx, user: discord.Member = None):
 	if user == None:
-		embed = discord.Embed(title = f"{ctx.message.author.name}", description = f"{author.avatar_url}", color = 0x00FFFF)
+		author = ctx.message.author
+		embed = discord.Embed(title = ctx.message.author.name, color = 0x00FFFF)
+		embed.set_image(url=author.avatar_url)
 		await ctx.send(embed=embed)
 	else:
 		embed = discord.Embed(title = user.name, color = 0x00FFFF)
