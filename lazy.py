@@ -339,4 +339,58 @@ async def avatar(ctx, user: discord.Member = None):
 		await ctx.send(embed=embed)
 # /avatar
 
+#warn
+@bot.command(aliases = ['Warn'])
+@has_permissions(administrator =True)
+async def warn(ctx, user: discord.Member, *, reason=None):
+	if reason == "None":
+		f = open("warns.txt", "a")
+		embed = discord.Embed(title={user}, description="None")
+		await f.append(embed=embed)
+		await ctx.send(embed=embed)
+	else:
+		f = open("warns.txt", "a")
+		embed = discord.Embed(title={user}, description={reason})
+		await f.append(embed=embed)
+		await ctx.send(embed=embed)
+# /warn
+
+@bot.command(aliases = ['Rules'])
+@has_permissions(administrator =True)
+async def rules(ctx):
+	embed = discord.Embed(title = 'Rules', description = 
+'''#1:  No spamming(5+ lines). If you spam once you will be warned but after this warn the moderators can mute you immediately for a day.
+- Copypasta is also prohibited.
+
+#2: No interfering with moderator's duties, don't argue with them while they are actively moderate, and don't troll with fake evidence.
+
+#3: Do not be racist. We don't care if you say "nigga" etc. Just don't use it offensively.
+
+#4: Advertising or Self-Promotion isn't allowed anywhere(only managers+ can).
+
+#5: NSFW (Not Safe For Work) Content and Media are not permitted inside chatrooms. Following the Discord TOS, NSFW avatars are also not allowed.
+
+#6: Punishment evasion(bypass a punishment given to your main account) is not allowed. Any bypassing of rules of any kind is not permitted and will lead to serious actions.
+
+#7: Ghostpinging (Tag and delete) is a serious offense and you can be muted without warning.
+
+#8: Don't send any NSFW content and don't do dm ad, or u will get ban. 
+
+#9: Use Introduction Channel wisely and no chatting is allowed there.
+
+#10: No abusing offensively is allowed.
+
+#11: Use the channels for their correct use. 
+- <#799624713214492732> is used for bot commands ONLY.
+- Keep <#799616295364198403>  is for general discussions(No bot command).
+
+Punishment System:
+3 warnings - Mute.
+6 warnings - Kick.
+15 warnings- Ban.
+
+Moderators have the right to skip to a suspension or a ban, depending on the offense.
+If you would like to report someone, please DM any staff members''', color = 0x00FFFF)
+	await ctx.send(embed=embed)
+
 bot.run(DISCORD_TOKEN)
