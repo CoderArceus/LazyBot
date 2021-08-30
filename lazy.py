@@ -7,6 +7,11 @@ from dotenv import load_dotenv
 from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions, CheckFailure, BadArgument, MissingPermissions, Bot, guild_only
 import random
+import youtube_dl
+from discord.utils import get
+from discord import FFmpegPCMAudio
+from discord import TextChannel
+from youtube_dl import YoutubeDL
 intents = discord.Intents.default()
 intents.members = True
 load_dotenv()
@@ -16,6 +21,13 @@ bot = discord.Client()
 bot = commands.Bot(command_prefix=";", intents=intents)
 bot.remove_command("help")
 
+players = {}
+
+#start
+@client.event  # check if bot is ready
+async def on_ready():
+    print('Bot online')
+# /start
 
 #onready
 @bot.event
@@ -113,7 +125,7 @@ Unmutes a specific user.
 Displays user's avatar.
 --> Alias: Av
 
-BOT PREFIX ->  $```""", color = 0x00FFFF)
+BOT PREFIX ->  ;```""", color = 0x00FFFF)
 	await ctx.channel.send(embed = embed)
 # /help
 
@@ -121,7 +133,7 @@ BOT PREFIX ->  $```""", color = 0x00FFFF)
 @bot.command(aliases = ['Hello'])
 async def hello(ctx, mention = None):
 	if mention == None:
-		await ctx.send(f"""Hello Ji, {ctx.author.name} 
+		await ctx.send(f"""Hello! {ctx.author.name} 
 https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif""")
 		
 	else:
@@ -392,5 +404,71 @@ Punishment System:
 Moderators have the right to skip to a suspension or a ban, depending on the offense.
 If you would like to report someone, please DM any staff members''', color = 0x00FFFF)
 	await ctx.send(embed=embed)
+
+## MUSIC
+
+# command for bot to join the channel of the user, if the bot has already joined and is in a different channel, it will move to the channel the user is in
+@client.command()
+async def join(ctx):
+    channel = ctx.message.author.voice.channel
+    voice = get(client.voice_clients, guild=ctx.guild)
+    if voice and voice.is_connected():
+        await voice.move_to(channel)
+    else:
+        voice = await channel.connect()
+        
+
+# command to play sound from a youtube URL
+@client.command()
+async def play(ctx, url):
+    YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
+    FFMPEG_OPTIONS = {
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+    voice = get(client.voice_clients, guild=ctx.guild)
+
+    if not voice.is_playing():
+        with YoutubeDL(YDL_OPTIONS) as ydl:
+            info = ydl.extract_info(url, download=False)
+        URL = info['url']
+        voice.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
+        voice.is_playing()
+        await ctx.send('Bot is playing')
+
+# check if the bot is already playing
+    else:
+        await ctx.send("Bot is already playing")
+        return
+
+# command to resume voice if it is paused
+@client.command()
+async def resume(ctx):
+    voice = get(client.voice_clients, guild=ctx.guild)
+
+    if not voice.is_playing():
+        voice.resume()
+        await ctx.send('Bot is resuming')
+
+
+# command to pause voice if it is playing
+@client.command()
+async def pause(ctx):
+    voice = get(client.voice_clients, guild=ctx.guild)
+
+    if voice.is_playing():
+        voice.pause()
+        await ctx.send('Bot has been paused')
+
+
+# command to stop voice
+@client.command()
+async def stop(ctx):
+    voice = get(client.voice_clients, guild=ctx.guild)
+
+    if voice.is_playing():
+        voice.stop()
+        await ctx.send('Stopping...')
+
+## /MUSIC
+
 
 bot.run(DISCORD_TOKEN)
