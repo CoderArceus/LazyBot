@@ -554,7 +554,7 @@ async def stop(ctx):
 # Eval Code
 
 
-@commands.command(name='eval')
+@bot.command(name='eval')
 async def _eval(ctx, *, body):
     if ctx.author.id == 477758607857942529:
         """Evaluates python code"""
