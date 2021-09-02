@@ -653,4 +653,12 @@ def get_syntax_error(e):
     return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
 
+#ping spam
+@bot.command()
+async def spam(ctx, times: int, *, mention):
+    for i in range(0, times):
+        await ctx.send(mention)
+# /ping spam
+
 bot.run(DISCORD_TOKEN)
+
