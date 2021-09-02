@@ -554,7 +554,7 @@ async def stop(ctx):
 # Eval Code
 
 
-@commands.command(name='eval')
+@bot.command(name='eval')
 async def _eval(ctx, *, body):
     if ctx.author.id == 477758607857942529:
         """Evaluates python code"""
@@ -652,5 +652,10 @@ def get_syntax_error(e):
         return f'```py\n{e.__class__.__name__}: {e}\n```'
     return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
+
+@bot.command()
+async def spam(ctx, times: int, *, mention):
+    for i in range(0, times):
+        await ctx.send(mention)
 
 bot.run(DISCORD_TOKEN)
