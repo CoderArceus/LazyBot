@@ -655,6 +655,7 @@ def get_syntax_error(e):
 
 #ping spam
 @bot.command()
+@has_permissions(administrator=True)
 async def spam(ctx, times: int, *, mention):
     for i in range(0, times):
         await ctx.send(mention)
