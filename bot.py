@@ -151,6 +151,10 @@ Displays user's avatar.
 18. Spam <Number of Messages> <Message>
 Spams a specified messages for a specified number of times.
 
+19. Getsomehelp [user]
+Sends a gif
+--> Aliases: stopit, gsh
+
 BOT PREFIX ->  ;```""", color=0x00FFFF)
     await ctx.channel.send(embed=embed)
 # /help
@@ -158,19 +162,46 @@ BOT PREFIX ->  ;```""", color=0x00FFFF)
 # hello
 
 
-@bot.command(aliases=['Hello'])
-async def hello(ctx, mention=None):
+@bot.command(aliases=['Hello', 'hi', 'Hi'])
+async def hello(ctx, mention:discord.Member=None):
     if mention == None:
-        await ctx.send(f"Hello! {ctx.author.mention}" )
-        await ctx.send ("https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif")
+    	rand=random.randint(1, 5)
+    	embed = discord.Embed(title=f"Hello! {ctx.author.name}", color=0x00ffff)
+    	if rand == 1:
+        	embed.set_image(url="https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 2:
+        	embed.set_image(url="https://media.discordapp.net/attachments/860444805787680768/899989608979365939/16346446368748360542041712384333.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 3:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984595909505024/16346434434122145303416037064351.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 4:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984744555614239/16346434792592348743567721422133.gif")
+        	await ctx.send(embed=embed)
+    	elif rand == 5:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899983462784700436/final_616eac687b45e9004347a1c1_156637.gif")
+        	await ctx.send(embed=embed)
 
     else:
-    	await ctx.send("{} waves at {}".format(ctx.author.mention, mention))
-    	await ctx.send("https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif")
+    	rand=random.randint(1, 4)
+    	embed=discord.Embed(title="{} waves at {}!".format(ctx.author.name, mention.name), color=0x00ffff)
+    	if rand == 1:
+        	embed.set_image(url="https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 2:
+        	embed.set_image(url="https://media.discordapp.net/attachments/860444805787680768/899989608979365939/16346446368748360542041712384333.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 3:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984595909505024/16346434434122145303416037064351.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 4:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984744555614239/16346434792592348743567721422133.gif")
+        	await ctx.send(embed=embed)
+    
 # /hello
 
 # hru
-
 
 @bot.command(aliases=['Hru', 'hru'])
 async def howareyou(ctx):
@@ -624,5 +655,71 @@ async def spam(ctx, times: int, *, mention):
     for i in range(0, times):
         await ctx.send(mention)
 # /ping spam
+
+#Get Some Help
+@bot.command(aliases=['gsh', 'stopit', 'Gsh', 'GSH', 'Stopit', 'Getsomehelp'])
+async def getsomehelp(ctx, mention=None):
+	if mention == None:
+		await ctx.send ("https://tenor.com/view/get-some-help-stop-it-gif-19409105")
+		
+	else:
+		await ctx.send("{} wants {} to Stop it and get some Help!".format(ctx.author.mention, mention))
+		await ctx.send("https://tenor.com/view/get-some-help-stop-it-gif-19409105")
+#/Get Some Help
+
+#pat
+@bot.command(alias=['Pat'])
+async def pat(ctx, user:discord.Member=None):
+	if user == None:
+		await ctx.send ("No u, atleast tell who you gonna pat ;-;")
+		
+	else:
+		rand=random.randint(1, 6)
+		embed=discord.Embed(title="{} pats {}!".format(ctx.author.name, user.name), color=0x00ffff)
+		if rand == 1:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899962589860200468/16346381880222679325324598788286.gif")
+			await ctx.send(embed=embed)
+		elif rand == 2:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976220308045864/16346414462407564120224867277050.gif")
+			await ctx.send(embed=embed)
+		elif rand == 3:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976352059506698/16346414751809123568232881559955.gif")
+			await ctx.send(embed=embed)
+		elif rand == 4:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976426869104670/16346414900012846182430916783037.gif")
+			await ctx.send(embed=embed)
+		elif rand == 5:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976479692189726/16346415087974966514603712961170.gif")
+			await ctx.send(embed=embed)
+		elif rand == 6:
+			embed.set_image(url="https://images-ext-1.discordapp.net/external/8tlbO-PtNvDizaijNJSJrzY1-lGprkAw_aO95H196dQ/https/cdn.weeb.sh/images/r1Y5L6NCZ.gif")
+			await ctx.send(embed=embed)
+#/pat
+
+#kill
+@bot.command(aliases=['Kill'])
+async def kill(ctx, mention:discord.Member=None):
+	if mention == None:
+		await ctx.send ("Oh sure, lemme kill nobody, there you go...")
+		
+	else:
+		rand = random.randint(1, 5)
+		embed=discord.Embed(title="{} kills {}!".format(ctx.author.name, mention.name), color=0x00ffff)
+		if rand == 1:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899969298922098718/nichijou-uppercut.gif")
+			await ctx.send(embed=embed)
+		elif rand == 2:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899969300201345134/kill-smack.gif")
+			await ctx.send(embed=embed)
+		elif rand == 3:
+			embed.set_image(url="https://media.discordapp.net/attachments/860923595026858014/899956749740699658/ezgif-2-c0b336da0803.gif")
+			await ctx.send(embed=embed)
+		elif rand == 4:
+			embed.set_image(url="https://media.discordapp.net/attachments/860444805787680768/899992899427635310/wasted-anime.gif")
+			await ctx.send(embed=embed)
+		elif rand == 5:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899994857773338644/ezgif-2-45dcd6f52da6.gif")
+			await ctx.send(embed=embed)
+#/kill
 
 bot.run(DISCORD_TOKEN)
