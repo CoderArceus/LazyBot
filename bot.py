@@ -722,4 +722,20 @@ async def kill(ctx, mention:discord.Member=None):
 			await ctx.send(embed=embed)
 #/kill
 
+
+#lockdown and unlock
+@bot.command(aliases=['Lockdown', 'lock', 'Lock'])
+@has_permissions(manage_channels = True)
+async def lockdown(ctx, channel=None):
+	if channel == None:
+		await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
+		await ctx.send( ctx.channel.mention + " ***is now in lockdown.***")
+    
+@bot.command(aliases=['Unlock'])
+@has_permissions(manage_channels=True)
+async def unlock(ctx, channel=None):
+    await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
+    await ctx.send(ctx.channel.mention + " ***has been unlocked.***")
+#/lockdown and unlock
+
 bot.run(DISCORD_TOKEN)
