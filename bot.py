@@ -652,8 +652,12 @@ def get_syntax_error(e):
 @bot.command()
 @has_permissions(administrator=True)
 async def spam(ctx, times: int, *, mention):
-    for i in range(0, times):
-        await ctx.send(mention)
+	id = str(ctx.author.id)
+	if id == '760066303427477514':
+		print("chal bsdk XD")
+	else:
+		for i in range(0, times):
+			await ctx.send(mention)
 # /ping spam
 
 #Get Some Help
