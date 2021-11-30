@@ -343,7 +343,7 @@ async def clean(ctx, limit: int):
 
 @bot.command(pass_context=True)
 async def mute(ctx, member: discord.Member):
-    if ctx.message.author.guild_permissions.administrator:
+    if ctx.message.author.guild_permissions.mute_members:
         role = discord.utils.get(member.guild.roles, name='Muted')
         await member.add_roles(role)
         embed = discord.Embed(title="User Muted!", description="**{0}** was muted by **{1}**!".format(
@@ -360,7 +360,7 @@ async def mute(ctx, member: discord.Member):
 
 @bot.command(pass_context=True)
 async def unmute(ctx, member: discord.Member):
-    if ctx.message.author.guild_permissions.administrator:
+    if ctx.message.author.guild_permissions.mute_members:
         role = discord.utils.get(member.guild.roles, name='Muted')
         await member.remove_roles(role)
         embed = discord.Embed(title="User Unmuted!", description="**{0}** was unmuted by **{1}**!".format(
@@ -650,14 +650,18 @@ def get_syntax_error(e):
 
 #ping spam
 @bot.command()
-@has_permissions(administrator=True)
 async def spam(ctx, times: int, *, mention):
-	id = str(ctx.author.id)
-	if id == '760066303427477514':
-		print("chal bsdk XD")
+	if ctx.message.author.guild_permissions.mute_members:
+		id = str(ctx.author.id)
+		if id == '760066303427477514':
+			print("chal bsdk XD")
+		else:
+			for i in range(0, times):
+				await ctx.send(mention)
 	else:
-		for i in range(0, times):
-			await ctx.send(mention)
+		embed = discord.Embed(title="Permission Denied.", description="You don't have permission to use this command.", color=0x00FFFF)
+		await ctx.channel.send(embed=embed)
+
 # /ping spam
 
 #Get Some Help
