@@ -650,21 +650,23 @@ def get_syntax_error(e):
 
 #spam
 @bot.command()
-@has_permissions(administrator=True)
 async def spam(ctx, times: int, *, text):
-    for i in range(0, times):
-        await ctx.send(text)
+    if ctx.author.id == 925699168469655552:
+        for i in range(0, times):
+            await ctx.send(text)
+    else:
+        await ctx.send("soja bhay")
 #spam
 
 #dm spam
 @bot.command()
-@has_permissions(administrator=True)
 async def dmspam(ctx, times: int, user: discord.Member,*, text):
-    if ctx.author.id == "925699168469655552":
-        await ctx.send("soja bhay")
-    else:
+    if ctx.author.id == 925699168469655552 or 794270556848390154 or 477758607857942529 or 758589519531474969:
+        await ctx.send("omw to burn someone's dms :smirk:")
         for i in range(0, times):
             await user.send(text)
+    else:
+        await ctx.send("soja bhay")
 # /dm spam
 
 #Get Some Help
