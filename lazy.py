@@ -55,9 +55,9 @@ async def on_ready():
 @bot.command(name="std")
 async def shutdown(ctx):
     id = str(ctx.author.id)
-    if id == '707783923844776047':
+    if id == '925699168469655552':
         await ctx.send('Shutting down the bot!')
-        await ctx.bot.logout()
+        await ctx.bot.close()
     else:
         await ctx.send("You dont have sufficient permissions to perform this action!")
 # /shutdown
@@ -73,8 +73,6 @@ async def pinger(ctx):
 # /ping
 
 # bold
-
-
 @bot.command(aliases=['bold', 'bd', 'Bold'])
 async def bold_da_text(ctx, arg):
     await ctx.channel.send("**" + arg + "**")
@@ -94,7 +92,7 @@ async def italic_da_text(ctx, arg):
 @bot.command(name="help")
 async def commands(ctx):
     embed = discord.Embed(title="LazyBot Commands", description="""```
---> <> are required fiels whereas [ ] are optional
+--> <> are required fields whereas [ ] are optional
 
 1. Ping
 Use to check if bot is active.
@@ -150,6 +148,13 @@ Unmutes a specific user.
 Displays user's avatar.
 --> Alias: Av
 
+18. Spam <Number of Messages> <Message>
+Spams a specified messages for a specified number of times.
+
+19. Getsomehelp [user]
+Sends a gif
+--> Aliases: stopit, gsh
+
 BOT PREFIX ->  ;```""", color=0x00FFFF)
     await ctx.channel.send(embed=embed)
 # /help
@@ -157,19 +162,46 @@ BOT PREFIX ->  ;```""", color=0x00FFFF)
 # hello
 
 
-@bot.command(aliases=['Hello'])
-async def hello(ctx, mention=None):
+@bot.command(aliases=['Hello', 'hi', 'Hi'])
+async def hello(ctx, mention:discord.Member=None):
     if mention == None:
-        await ctx.send(f"""Hello! {ctx.author.name} 
-https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif""")
+    	rand=random.randint(1, 5)
+    	embed = discord.Embed(title=f"Hello! {ctx.author.name}", color=0x00ffff)
+    	if rand == 1:
+        	embed.set_image(url="https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 2:
+        	embed.set_image(url="https://media.discordapp.net/attachments/860444805787680768/899989608979365939/16346446368748360542041712384333.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 3:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984595909505024/16346434434122145303416037064351.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 4:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984744555614239/16346434792592348743567721422133.gif")
+        	await ctx.send(embed=embed)
+    	elif rand == 5:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899983462784700436/final_616eac687b45e9004347a1c1_156637.gif")
+        	await ctx.send(embed=embed)
 
     else:
-        await ctx.send("""https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif
-||{}||""".format(mention))
+    	rand=random.randint(1, 4)
+    	embed=discord.Embed(title="{} waves at {}!".format(ctx.author.name, mention.name), color=0x00ffff)
+    	if rand == 1:
+        	embed.set_image(url="https://cdn.discordapp.com/attachments/766663041735196705/820997741269876766/tumblr_nt2axxI1no1tydz8to1_500.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 2:
+        	embed.set_image(url="https://media.discordapp.net/attachments/860444805787680768/899989608979365939/16346446368748360542041712384333.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 3:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984595909505024/16346434434122145303416037064351.gif")
+        	await ctx.send(embed=embed)
+    	if rand == 4:
+        	embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899984744555614239/16346434792592348743567721422133.gif")
+        	await ctx.send(embed=embed)
+    
 # /hello
 
 # hru
-
 
 @bot.command(aliases=['Hru', 'hru'])
 async def howareyou(ctx):
@@ -445,43 +477,6 @@ async def warn(ctx, user: discord.Member, *, reason=None):
 # /warn
 
 
-@bot.command(aliases=['Rules'])
-@has_permissions(administrator=True)
-async def rules(ctx):
-    embed = discord.Embed(title='Rules', description='''#1:  No spamming(5+ lines). If you spam once you will be warned but after this warn the moderators can mute you immediately for a day.
-- Copypasta is also prohibited.
-
-#2: No interfering with moderator's duties, don't argue with them while they are actively moderate, and don't troll with fake evidence.
-
-#3: Do not be racist. We don't care if you say "nigga" etc. Just don't use it offensively.
-
-#4: Advertising or Self-Promotion isn't allowed anywhere(only managers+ can).
-
-#5: NSFW (Not Safe For Work) Content and Media are not permitted inside chatrooms. Following the Discord TOS, NSFW avatars are also not allowed.
-
-#6: Punishment evasion(bypass a punishment given to your main account) is not allowed. Any bypassing of rules of any kind is not permitted and will lead to serious actions.
-
-#7: Ghostpinging (Tag and delete) is a serious offense and you can be muted without warning.
-
-#8: Don't send any NSFW content and don't do dm ad, or u will get ban. 
-
-#9: Use Introduction Channel wisely and no chatting is allowed there.
-
-#10: No abusing offensively is allowed.
-
-#11: Use the channels for their correct use. 
-- <#799624713214492732> is used for bot commands ONLY.
-- Keep <#799616295364198403>  is for general discussions(No bot command).
-
-Punishment System:
-3 warnings - Mute.
-6 warnings - Kick.
-15 warnings- Ban.
-
-Moderators have the right to skip to a suspension or a ban, depending on the offense.
-If you would like to report someone, please DM any staff members''', color=0x00FFFF)
-    await ctx.send(embed=embed)
-
 # MUSIC
 
 # command for bot to join the channel of the user, if the bot has already joined and is in a different channel, it will move to the channel the user is in
@@ -551,8 +546,8 @@ async def stop(ctx):
 
 # /MUSIC
 
-# Eval Code
 
+# Eval Code
 
 @bot.command(name='eval')
 async def _eval(ctx, *, body):
@@ -653,13 +648,105 @@ def get_syntax_error(e):
     return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
 
-#ping spam
+#spam
 @bot.command()
 @has_permissions(administrator=True)
-async def spam(ctx, times: int, *, mention):
+async def spam(ctx, times: int, *, text):
     for i in range(0, times):
-        await ctx.send(mention)
-# /ping spam
+        await ctx.send(text)
+#spam
+
+#dm spam
+@bot.command()
+@has_permissions(administrator=True)
+async def dmspam(ctx, times: int, user: discord.Member,*, text):
+    if ctx.author.id == "925699168469655552":
+        await ctx.send("soja bhay")
+    else:
+        for i in range(0, times):
+            await user.send(text)
+# /dm spam
+
+#Get Some Help
+@bot.command(aliases=['gsh', 'stopit', 'Gsh', 'GSH', 'Stopit', 'Getsomehelp'])
+async def getsomehelp(ctx, mention=None):
+	if mention == None:
+		await ctx.send ("https://tenor.com/view/get-some-help-stop-it-gif-19409105")
+		
+	else:
+		await ctx.send("{} wants {} to Stop it and get some Help!".format(ctx.author.mention, mention))
+		await ctx.send("https://tenor.com/view/get-some-help-stop-it-gif-19409105")
+#/Get Some Help
+
+#pat
+@bot.command(alias=['Pat'])
+async def pat(ctx, user:discord.Member=None):
+	if user == None:
+		await ctx.send ("No u, atleast tell who you gonna pat ;-;")
+		
+	else:
+		rand=random.randint(1, 6)
+		embed=discord.Embed(title="{} pats {}!".format(ctx.author.name, user.name), color=0x00ffff)
+		if rand == 1:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899962589860200468/16346381880222679325324598788286.gif")
+			await ctx.send(embed=embed)
+		elif rand == 2:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976220308045864/16346414462407564120224867277050.gif")
+			await ctx.send(embed=embed)
+		elif rand == 3:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976352059506698/16346414751809123568232881559955.gif")
+			await ctx.send(embed=embed)
+		elif rand == 4:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976426869104670/16346414900012846182430916783037.gif")
+			await ctx.send(embed=embed)
+		elif rand == 5:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899976479692189726/16346415087974966514603712961170.gif")
+			await ctx.send(embed=embed)
+		elif rand == 6:
+			embed.set_image(url="https://images-ext-1.discordapp.net/external/8tlbO-PtNvDizaijNJSJrzY1-lGprkAw_aO95H196dQ/https/cdn.weeb.sh/images/r1Y5L6NCZ.gif")
+			await ctx.send(embed=embed)
+#/pat
+
+#kill
+@bot.command(aliases=['Kill'])
+async def kill(ctx, mention:discord.Member=None):
+	if mention == None:
+		await ctx.send ("Oh sure, lemme kill nobody, there you go...")
+		
+	else:
+		rand = random.randint(1, 5)
+		embed=discord.Embed(title="{} kills {}!".format(ctx.author.name, mention.name), color=0x00ffff)
+		if rand == 1:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899969298922098718/nichijou-uppercut.gif")
+			await ctx.send(embed=embed)
+		elif rand == 2:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899969300201345134/kill-smack.gif")
+			await ctx.send(embed=embed)
+		elif rand == 3:
+			embed.set_image(url="https://media.discordapp.net/attachments/860923595026858014/899956749740699658/ezgif-2-c0b336da0803.gif")
+			await ctx.send(embed=embed)
+		elif rand == 4:
+			embed.set_image(url="https://media.discordapp.net/attachments/860444805787680768/899992899427635310/wasted-anime.gif")
+			await ctx.send(embed=embed)
+		elif rand == 5:
+			embed.set_image(url="https://media.discordapp.net/attachments/807481371475443742/899994857773338644/ezgif-2-45dcd6f52da6.gif")
+			await ctx.send(embed=embed)
+#/kill
+
+
+#lockdown and unlock
+@bot.command(aliases=['Lockdown', 'lock', 'Lock'])
+@has_permissions(manage_channels = True)
+async def lockdown(ctx, channel=None):
+	if channel == None:
+		await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
+		await ctx.send( ctx.channel.mention + " ***is now in lockdown.***")
+    
+@bot.command(aliases=['Unlock'])
+@has_permissions(manage_channels=True)
+async def unlock(ctx, channel=None):
+    await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
+    await ctx.send(ctx.channel.mention + " ***has been unlocked.***")
+#/lockdown and unlock
 
 bot.run(DISCORD_TOKEN)
-
